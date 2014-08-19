@@ -1,0 +1,13 @@
+# drivers/xrz_io/Kconfig
+
+
+menu "XRZtech  support drivers"
+
+config XRZ_IO
+	tristate "xrz io Driver"
+	default y
+
+
+
+endmenu
+

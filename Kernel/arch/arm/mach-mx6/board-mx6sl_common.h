@@ -1,0 +1,861 @@
+/*
+ * Copyright (C) 2012 Freescale Semiconductor, Inc. All Rights Reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+#ifndef _BOARD_MX6SL_COMMON_H
+#define _BOARD_MX6SL_COMMON_H
+#include <mach/iomux-mx6sl.h>
+
+
+
+static iomux_v3_cfg_t mx6sl_brd_pads[] = {
+
+#if defined(CONFIG_SND_SOC_IMX_AIC325X)
+	/* AUDMUX */
+	MX6SL_PAD_AUD_TXC__AUDMUX_AUD3_TXC,
+	MX6SL_PAD_AUD_TXD__AUDMUX_AUD3_TXD,
+	MX6SL_PAD_AUD_TXFS__AUDMUX_AUD3_TXFS,
+	MX6SL_PAD_AUD_RXD__AUDMUX_AUD3_RXD,
+	MX6SL_PAD_AUD_MCLK__AUDMUX_AUDIO_CLK_OUT,
+	//MX6SL_PAD_FEC_RX_ER__GPIO_4_19,
+	MX6SL_PAD_EPDC_D13__GPIO_1_20,/*HEADPHONE_DET*/
+	MX6SL_PAD_EPDC_D14__GPIO_1_21,/*reset*/
+	
+#endif
+
+	/* UART1 */
+	MX6SL_PAD_UART1_RXD__UART1_RXD,
+	MX6SL_PAD_UART1_TXD__UART1_TXD,
+
+
+	////////////////////////////////////////////
+	//////////                   SD1   bootup                 
+       ////////////////////////////////////////////
+	MX6SL_PAD_SD1_CLK__USDHC1_CLK_50MHZ,
+	MX6SL_PAD_SD1_CMD__USDHC1_CMD_50MHZ,
+	MX6SL_PAD_SD1_DAT0__USDHC1_DAT0_50MHZ,
+	MX6SL_PAD_SD1_DAT1__USDHC1_DAT1_50MHZ,
+	MX6SL_PAD_SD1_DAT2__USDHC1_DAT2_50MHZ,
+	MX6SL_PAD_SD1_DAT3__USDHC1_DAT3_50MHZ,
+	MX6SL_PAD_SD1_DAT4__USDHC1_DAT4_50MHZ,
+	MX6SL_PAD_SD1_DAT5__USDHC1_DAT5_50MHZ,
+	MX6SL_PAD_SD1_DAT6__USDHC1_DAT6_50MHZ,
+	MX6SL_PAD_SD1_DAT7__USDHC1_DAT7_50MHZ,
+	/* SD1 CD & WP */
+	//MX6SL_PAD_KEY_ROW7__GPIO_4_7,
+	//MX6SL_PAD_FEC_TXD0__GPIO_4_24,/*CARD_DETECT*/
+	////////////////////////////////////////////
+	//////////                   SD2   use for camera
+       ////////////////////////////////////////////
+	//MX6SL_PAD_SD2_CLK__USDHC2_CLK_50MHZ,
+	//MX6SL_PAD_SD2_CMD__USDHC2_CMD_50MHZ,
+	//MX6SL_PAD_SD2_DAT0__USDHC2_DAT0_50MHZ,
+	//MX6SL_PAD_SD2_DAT1__USDHC2_DAT1_50MHZ,
+	//MX6SL_PAD_SD2_DAT2__USDHC2_DAT2_50MHZ,
+	//MX6SL_PAD_SD2_DAT3__USDHC2_DAT3_50MHZ,
+	//MX6SL_PAD_SD2_DAT4__USDHC2_DAT4_50MHZ,
+	//MX6SL_PAD_SD2_DAT5__USDHC2_DAT5_50MHZ,
+	//MX6SL_PAD_SD2_DAT6__USDHC2_DAT6_50MHZ,
+	//MX6SL_PAD_SD2_DAT7__USDHC2_DAT7_50MHZ,
+	/* SD2 CD & WP */
+	//MX6SL_PAD_SD2_DAT7__GPIO_5_0,
+	//MX6SL_PAD_SD2_DAT6__GPIO_4_29,
+	////////////////////////////////////////////
+	/// SD3 external card.
+	////////////////////////////////////////////
+	MX6SL_PAD_SD3_CLK__USDHC3_CLK_50MHZ,
+	MX6SL_PAD_SD3_CMD__USDHC3_CMD_50MHZ,
+	MX6SL_PAD_SD3_DAT0__USDHC3_DAT0_50MHZ,
+	MX6SL_PAD_SD3_DAT1__USDHC3_DAT1_50MHZ,
+	MX6SL_PAD_SD3_DAT2__USDHC3_DAT2_50MHZ,
+	MX6SL_PAD_SD3_DAT3__USDHC3_DAT3_50MHZ,
+
+	MX6SL_PAD_KEY_COL1__GPIO_3_26,/* card power en */
+	/* SD3 CD */
+	MX6SL_PAD_KEY_COL0__GPIO_3_24,/*CARD_DETECT*/
+	//////////////////////////////////////////////////
+	///SD4 ,USE FOR WIFI
+	//////////////////////////////////////////////////
+	//MX6SL_PAD_LCD_DAT11__GPIO_2_31,/*cd */
+	/*32k clk*/
+	MX6SL_PAD_REF_CLK_32K__ANATOP_ANATOP_32K_OUT,
+	/*WIFI_SD4_CLK*/
+	MX6SL_PAD_FEC_MDIO__USDHC4_CLK_50MHZ,
+	/*WIFI_SD4_CMD*/
+	MX6SL_PAD_FEC_TX_CLK__USDHC4_CMD_50MHZ,
+	/*WIFI_SD4_DAT0*/
+         MX6SL_PAD_FEC_RX_ER__USDHC4_DAT0_50MHZ,
+         /*WIFI_SD4_DAT1*/
+	MX6SL_PAD_FEC_CRS_DV__USDHC4_DAT1_50MHZ,
+	/*WIFI_SD4_DAT2*/
+	MX6SL_PAD_FEC_RXD1__USDHC4_DAT2_50MHZ,
+	/*WIFI_SD4_DAT3*/
+	MX6SL_PAD_FEC_TXD0__USDHC4_DAT3_50MHZ,
+	//////////////////////////////////////////////////
+	///
+	//////////////////////////////////////////////////
+	/* I2C0 */
+	MX6SL_PAD_I2C1_SCL__I2C1_SCL,
+	MX6SL_PAD_I2C1_SDA__I2C1_SDA,
+	/*I2C1*/
+	MX6SL_PAD_I2C2_SCL__I2C2_SCL,
+	MX6SL_PAD_I2C2_SDA__I2C2_SDA,
+	/*I2C2*/
+	//MX6SL_PAD_EPDC_SDCE3__I2C3_SDA,
+	//MX6SL_PAD_EPDC_SDCE2__I2C3_SCL,
+	MX6SL_PAD_AUD_RXFS__I2C3_SCL,
+	MX6SL_PAD_AUD_RXC__I2C3_SDA,
+	/* ECSPI1 */
+	//MX6SL_PAD_ECSPI1_MISO__ECSPI1_MISO,
+	//MX6SL_PAD_ECSPI1_MOSI__ECSPI1_MOSI,
+	//MX6SL_PAD_ECSPI1_SCLK__ECSPI1_SCLK,
+	//MX6SL_PAD_ECSPI1_SS0__ECSPI1_SS0,
+	//MX6SL_PAD_ECSPI1_SS0__GPIO_4_11,	/* SS0 */
+	//////////////////////////////////////////////////
+	/////////LCD GPIO///////////////////////////
+	//////////////////////////////////////////////////
+#if (defined(CONFIG_IMX_HAVE_PLATFORM_IMX_ELCDIF) && defined(CONFIG_FB_MXC_ELCDIF_FB))
+	/* LCD */
+	MX6SL_PAD_LCD_CLK__LCDIF_CLK,
+	MX6SL_PAD_LCD_ENABLE__LCDIF_ENABLE,
+	MX6SL_PAD_LCD_HSYNC__LCDIF_HSYNC,
+	MX6SL_PAD_LCD_VSYNC__LCDIF_VSYNC,
+	MX6SL_PAD_LCD_RESET__LCDIF_RESET,
+	MX6SL_PAD_LCD_DAT0__LCDIF_DAT_0,
+	MX6SL_PAD_LCD_DAT1__LCDIF_DAT_1,
+	MX6SL_PAD_LCD_DAT2__LCDIF_DAT_2,
+	MX6SL_PAD_LCD_DAT3__LCDIF_DAT_3,
+	MX6SL_PAD_LCD_DAT4__LCDIF_DAT_4,
+	MX6SL_PAD_LCD_DAT5__LCDIF_DAT_5,
+	MX6SL_PAD_LCD_DAT6__LCDIF_DAT_6,
+	MX6SL_PAD_LCD_DAT7__LCDIF_DAT_7,
+	MX6SL_PAD_LCD_DAT8__LCDIF_DAT_8,
+	MX6SL_PAD_LCD_DAT9__LCDIF_DAT_9,
+	MX6SL_PAD_LCD_DAT10__LCDIF_DAT_10,
+	MX6SL_PAD_LCD_DAT11__LCDIF_DAT_11,
+	MX6SL_PAD_LCD_DAT12__LCDIF_DAT_12,
+	MX6SL_PAD_LCD_DAT13__LCDIF_DAT_13,
+	MX6SL_PAD_LCD_DAT14__LCDIF_DAT_14,
+	MX6SL_PAD_LCD_DAT15__LCDIF_DAT_15,
+	MX6SL_PAD_LCD_DAT16__LCDIF_DAT_16,
+	MX6SL_PAD_LCD_DAT17__LCDIF_DAT_17,
+	MX6SL_PAD_LCD_DAT18__LCDIF_DAT_18,
+	MX6SL_PAD_LCD_DAT19__LCDIF_DAT_19,
+	MX6SL_PAD_LCD_DAT20__LCDIF_DAT_20,
+	MX6SL_PAD_LCD_DAT21__LCDIF_DAT_21,
+	MX6SL_PAD_LCD_DAT22__LCDIF_DAT_22,
+	MX6SL_PAD_LCD_DAT23__LCDIF_DAT_23,
+	/* LCD brightness */
+	MX6SL_PAD_PWM1__PWM1_PWMO,
+	/* LCD power on */
+	MX6SL_PAD_KEY_ROW5__GPIO_4_3,
+#endif
+	//////////////////////////////////////////////////
+	/////////keypad on///////////////////////////
+	//////////////////////////////////////////////////
+#if defined(CONFIG_KEYBOARD_IMX)
+	/* keypad on E-Ink add-on board */
+	MX6SL_PAD_KEY_COL0__KPP_COL_0,
+	MX6SL_PAD_KEY_COL1__KPP_COL_1,
+	MX6SL_PAD_KEY_COL2__KPP_COL_2,
+	MX6SL_PAD_KEY_COL3__KPP_COL_3,
+	MX6SL_PAD_KEY_ROW0__KPP_ROW_0,
+	MX6SL_PAD_KEY_ROW1__KPP_ROW_1,
+	MX6SL_PAD_KEY_ROW2__KPP_ROW_2,
+	MX6SL_PAD_KEY_ROW3__KPP_ROW_3,
+#endif
+	/* The WDOG_B pad is used as an power key gpio button */
+	//MX6SL_PAD_WDOG_B__GPIO_3_18,
+	//MX6SL_PAD_SD2_CLK__GPIO_5_5,//only for test
+	/* Charge */
+	//MX6SL_PAD_ECSPI2_MISO__GPIO_4_14,  /* CHG_FLT */
+	//MX6SL_PAD_ECSPI2_SS0__GPIO_4_15, /* CHG_STATUS */
+	//MX6SL_PAD_ECSPI2_MOSI__GPIO_4_13, /* CHG_UOK ,CHG_DOK*/
+#if defined(CONFIG_BACKLIGHT_PWM)
+	/*  brightness control */
+	MX6SL_PAD_PWM1__PWM1_PWMO,
+#endif
+        ///////////////////////////////////////////////
+        ////only use for pb650
+        //////////////////////////////////////////////
+         /*Hall sensor pin*/
+	MX6SL_PAD_KEY_COL2__GPIO_3_28,
+	/*System LED*/
+	MX6SL_PAD_EPDC_PWRCTRL1__GPIO_2_8,
+	/*CHRG_OFF*/
+	MX6SL_PAD_FEC_TX_EN__GPIO_4_22,
+	/*CHARGER_STATE*/
+       MX6SL_PAD_FEC_REF_CLK__GPIO_4_26,
+       /*Software version control*/
+	MX6SL_PAD_ECSPI1_MISO__GPIO_4_10,
+	MX6SL_PAD_ECSPI1_SS0__GPIO_4_11,
+	/*FL_EN */
+	MX6SL_PAD_EPDC_D15__GPIO_1_22,
+};
+////////////////////////////////////////////////
+////Early suspend
+///////////////////////////////////////////////
+static iomux_v3_cfg_t suspend_enter_pads[] = {
+	/* Audio pads. */
+	MX6SL_PAD_AUD_TXC__GPIO_1_3,
+	MX6SL_PAD_AUD_TXD__GPIO_1_5,
+	MX6SL_PAD_AUD_TXFS__GPIO_1_4,
+	MX6SL_PAD_AUD_RXD__GPIO_1_2,
+	MX6SL_PAD_AUD_MCLK__GPIO_1_6,
+//#if  defined(CONFIG_SND_SOC_IMX_AIC325X)
+	//MX6SL_PAD_EPDC_D13__GPIO_1_20,/*HEADPHONE_DET*/
+	//MX6SL_PAD_EPDC_D14__GPIO_1_21,/*reset*/
+//#endif
+	/*I2C3*/
+	MX6SL_PAD_AUD_RXC__GPIO_1_1,
+	MX6SL_PAD_AUD_RXFS__GPIO_1_0,
+	
+	/*Software version control*/
+	MX6SL_PAD_ECSPI1_MISO__GPIO_4_10,
+	MX6SL_PAD_ECSPI1_SS0__GPIO_4_11,
+	/* ECSPI pads. */
+	MX6SL_PAD_ECSPI1_MOSI__GPIO_4_9,
+	MX6SL_PAD_ECSPI1_SCLK__GPIO_4_8,
+	MX6SL_PAD_ECSPI2_SCLK__GPIO_4_12,
+	/* FEC pad*/
+	//MX6SL_PAD_FEC_CRS_DV__GPIO_4_25,
+	MX6SL_PAD_FEC_MDC__GPIO_4_23,
+//	MX6SL_PAD_FEC_MDIO__GPIO_4_20,
+	MX6SL_PAD_FEC_REF_CLK__GPIO_4_26,
+	MX6SL_PAD_FEC_RXD0__GPIO_4_17,
+//	MX6SL_PAD_FEC_RXD1__GPIO_4_18,
+//	MX6SL_PAD_FEC_TXD0__GPIO_4_24,
+//	MX6SL_PAD_FEC_TXD1__GPIO_4_16,
+//	MX6SL_PAD_FEC_TX_CLK__GPIO_4_21,
+//	MX6SL_PAD_FEC_TX_EN__GPIO_4_22,
+	/* I2C pads */
+	MX6SL_PAD_I2C1_SCL__GPIO_3_12,
+	MX6SL_PAD_I2C1_SDA__GPIO_3_13,
+	MX6SL_PAD_I2C2_SCL__GPIO_3_14,
+	MX6SL_PAD_I2C2_SDA__GPIO_3_15,
+	/* LCD pads*/
+	MX6SL_PAD_LCD_CLK__GPIO_2_15,
+	MX6SL_PAD_LCD_DAT0__GPIO_2_20,
+	MX6SL_PAD_LCD_DAT1__GPIO_2_21,
+	MX6SL_PAD_LCD_DAT2__GPIO_2_22,
+	MX6SL_PAD_LCD_DAT3__GPIO_2_23,
+	MX6SL_PAD_LCD_DAT4__GPIO_2_24,
+	MX6SL_PAD_LCD_DAT5__GPIO_2_25,
+	MX6SL_PAD_LCD_DAT10__GPIO_2_30,
+	MX6SL_PAD_LCD_DAT11__GPIO_2_31,
+	MX6SL_PAD_LCD_DAT12__GPIO_3_0,
+	MX6SL_PAD_LCD_DAT13__GPIO_3_1,
+	MX6SL_PAD_LCD_DAT14__GPIO_3_2,
+	MX6SL_PAD_LCD_DAT15__GPIO_3_3,
+	MX6SL_PAD_LCD_DAT16__GPIO_3_4,
+	MX6SL_PAD_LCD_DAT17__GPIO_3_5,
+	MX6SL_PAD_LCD_DAT18__GPIO_3_6,
+	MX6SL_PAD_LCD_DAT19__GPIO_3_7,
+	MX6SL_PAD_LCD_DAT20__GPIO_3_8,
+	MX6SL_PAD_LCD_DAT21__GPIO_3_9,
+	MX6SL_PAD_LCD_DAT22__GPIO_3_10,
+	MX6SL_PAD_LCD_DAT23__GPIO_3_11,
+
+	/* PWM pads */
+	//do not suspend frontlight
+	//MX6SL_PAD_PWM1__GPIO_3_23,
+
+	/* SD pads. */
+//do not suspend EMMC0
+//	MX6SL_PAD_SD1_CLK__GPIO_5_15,
+//	MX6SL_PAD_SD1_CMD__GPIO_5_14,
+//	MX6SL_PAD_SD1_DAT0__GPIO_5_11,
+//	MX6SL_PAD_SD1_DAT1__GPIO_5_8,
+//	MX6SL_PAD_SD1_DAT2__GPIO_5_13,
+//	MX6SL_PAD_SD1_DAT3__GPIO_5_6,
+//	MX6SL_PAD_SD1_DAT4__GPIO_5_12,
+//	MX6SL_PAD_SD1_DAT5__GPIO_5_9,
+//	MX6SL_PAD_SD1_DAT6__GPIO_5_7,
+//	MX6SL_PAD_SD1_DAT7__GPIO_5_10,
+
+	MX6SL_PAD_SD2_CLK__GPIO_5_5,
+	MX6SL_PAD_SD2_CMD__GPIO_5_4,
+	MX6SL_PAD_SD2_DAT0__GPIO_5_1,
+	MX6SL_PAD_SD2_DAT1__GPIO_4_30,
+	MX6SL_PAD_SD2_DAT2__GPIO_5_3,
+	MX6SL_PAD_SD2_DAT3__GPIO_4_28,
+	MX6SL_PAD_SD2_DAT4__GPIO_5_2,
+	MX6SL_PAD_SD2_DAT5__GPIO_4_31,
+
+//do not suspend ext SD pins
+//	MX6SL_PAD_SD3_CLK__GPIO_5_18,
+//	MX6SL_PAD_SD3_CMD__GPIO_5_21,
+//	MX6SL_PAD_SD3_DAT0__GPIO_5_19,
+//	MX6SL_PAD_SD3_DAT1__GPIO_5_20,
+//	MX6SL_PAD_SD3_DAT2__GPIO_5_16,
+//	MX6SL_PAD_SD3_DAT3__GPIO_5_17,
+
+	/* USBOTG ID pin */
+	MX6SL_PAD_HSIC_STROBE__GPIO_3_20,
+	MX6SL_PAD_HSIC_DAT__GPIO_3_19,
+
+	/* Key row/column */
+//do not change state ext SD pins
+//	MX6SL_PAD_KEY_COL0__GPIO_3_24, //SD_CD
+//	MX6SL_PAD_KEY_COL1__GPIO_3_26, //SD_EN
+
+	MX6SL_PAD_KEY_COL2__GPIO_3_28,
+
+//do not change state eMMC0 reset pin
+//	MX6SL_PAD_KEY_COL3__GPIO_3_30,
+
+	MX6SL_PAD_KEY_COL6__GPIO_4_4,
+	//MX6SL_PAD_KEY_COL7__GPIO_4_6,
+	MX6SL_PAD_KEY_ROW0__GPIO_3_25,
+	MX6SL_PAD_KEY_ROW1__GPIO_3_27,
+	MX6SL_PAD_KEY_ROW2__GPIO_3_29,
+	MX6SL_PAD_KEY_ROW3__GPIO_3_31,
+	MX6SL_PAD_KEY_ROW4__GPIO_4_1,
+	MX6SL_PAD_KEY_ROW5__GPIO_4_3,
+	//MX6SL_PAD_KEY_ROW6__GPIO_4_5,
+
+	/*32k clk*/
+	MX6SL_PAD_REF_CLK_32K__GPIO_3_22,
+	/*WIFI_SD4_CLK*/
+	MX6SL_PAD_FEC_MDIO__GPIO_4_20,
+	/*WIFI_SD4_CMD*/
+	MX6SL_PAD_FEC_TX_CLK__GPIO_4_21,
+	/*WIFI_SD4_DAT0*/
+	MX6SL_PAD_FEC_RX_ER__GPIO_4_19,
+	/*WIFI_SD4_DAT1*/
+	MX6SL_PAD_FEC_CRS_DV__GPIO_4_25,
+	/*WIFI_SD4_DAT2*/
+	MX6SL_PAD_FEC_RXD1__GPIO_4_18,
+	/*WIFI_SD4_DAT3*/
+	MX6SL_PAD_FEC_TXD0__GPIO_4_24,
+};
+static iomux_v3_cfg_t suspend_exit_pads[ARRAY_SIZE(suspend_enter_pads)];
+
+/////////////////////////////////////////////////
+////Deep Suspend  
+/////////////////////////////////////////////////
+static iomux_v3_cfg_t deep_suspend_enter_pads[] = {
+	/* Audio pads. */
+// do not change audio pins state while is in suspend
+	MX6SL_PAD_AUD_TXC__GPIO_1_3,
+	MX6SL_PAD_AUD_TXD__GPIO_1_5,
+	MX6SL_PAD_AUD_TXFS__GPIO_1_4,
+	MX6SL_PAD_AUD_RXD__GPIO_1_2,
+	MX6SL_PAD_AUD_MCLK__GPIO_1_6,
+#if  defined(CONFIG_SND_SOC_IMX_AIC325X)
+	MX6SL_PAD_EPDC_D13__GPIO_1_20,/*HEADPHONE_DET*/
+	MX6SL_PAD_EPDC_D14__GPIO_1_21,/*reset*/
+#endif
+	/*I2C3*/
+	MX6SL_PAD_AUD_RXC__GPIO_1_1,
+	MX6SL_PAD_AUD_RXFS__GPIO_1_0,
+	
+	/*Software version control*/
+	MX6SL_PAD_ECSPI1_MISO__GPIO_4_10,
+	MX6SL_PAD_ECSPI1_SS0__GPIO_4_11,
+	/* ECSPI pads. */
+	MX6SL_PAD_ECSPI1_MOSI__GPIO_4_9,
+	MX6SL_PAD_ECSPI1_SCLK__GPIO_4_8,
+	/* FEC pad*/
+	//MX6SL_PAD_FEC_CRS_DV__GPIO_4_25,
+	MX6SL_PAD_FEC_MDC__GPIO_4_23,
+//	MX6SL_PAD_FEC_MDIO__GPIO_4_20,
+	MX6SL_PAD_FEC_REF_CLK__GPIO_4_26,
+	MX6SL_PAD_FEC_RXD0__GPIO_4_17,
+//	MX6SL_PAD_FEC_RXD1__GPIO_4_18,
+//	MX6SL_PAD_FEC_TXD0__GPIO_4_24,
+	MX6SL_PAD_FEC_TXD1__GPIO_4_16,
+//	MX6SL_PAD_FEC_TX_CLK__GPIO_4_21,
+//	MX6SL_PAD_FEC_TX_EN__GPIO_4_22,
+	/* I2C pads */
+	MX6SL_PAD_I2C1_SCL__GPIO_3_12,
+	MX6SL_PAD_I2C1_SDA__GPIO_3_13,
+	MX6SL_PAD_I2C2_SCL__GPIO_3_14,
+	MX6SL_PAD_I2C2_SDA__GPIO_3_15,
+	/* LCD pads*/
+	MX6SL_PAD_LCD_CLK__GPIO_2_15,
+	MX6SL_PAD_LCD_DAT0__GPIO_2_20,
+	MX6SL_PAD_LCD_DAT1__GPIO_2_21,
+	MX6SL_PAD_LCD_DAT2__GPIO_2_22,
+	MX6SL_PAD_LCD_DAT3__GPIO_2_23,
+	MX6SL_PAD_LCD_DAT4__GPIO_2_24,
+	MX6SL_PAD_LCD_DAT5__GPIO_2_25,
+	MX6SL_PAD_LCD_DAT6__GPIO_2_26,
+	MX6SL_PAD_LCD_DAT7__GPIO_2_27,
+	MX6SL_PAD_LCD_DAT8__GPIO_2_28,
+	MX6SL_PAD_LCD_DAT9__GPIO_2_29,
+	MX6SL_PAD_LCD_DAT10__GPIO_2_30,
+	MX6SL_PAD_LCD_DAT11__GPIO_2_31,
+	MX6SL_PAD_LCD_DAT12__GPIO_3_0,
+	MX6SL_PAD_LCD_DAT13__GPIO_3_1,
+	MX6SL_PAD_LCD_DAT14__GPIO_3_2,
+	MX6SL_PAD_LCD_DAT15__GPIO_3_3,
+	MX6SL_PAD_LCD_DAT16__GPIO_3_4,
+	MX6SL_PAD_LCD_DAT17__GPIO_3_5,
+	MX6SL_PAD_LCD_DAT18__GPIO_3_6,
+	MX6SL_PAD_LCD_DAT19__GPIO_3_7,
+	MX6SL_PAD_LCD_DAT20__GPIO_3_8,
+	MX6SL_PAD_LCD_DAT21__GPIO_3_9,
+	MX6SL_PAD_LCD_DAT22__GPIO_3_10,
+	MX6SL_PAD_LCD_DAT23__GPIO_3_11,
+
+	/* PWM pads */
+	//do not suspend frontlight
+	//MX6SL_PAD_PWM1__GPIO_3_23,
+
+	/* SD pads. */
+	MX6SL_PAD_SD1_CLK__GPIO_5_15,
+	MX6SL_PAD_SD1_CMD__GPIO_5_14,
+	MX6SL_PAD_SD1_DAT0__GPIO_5_11,
+	MX6SL_PAD_SD1_DAT1__GPIO_5_8,
+	MX6SL_PAD_SD1_DAT2__GPIO_5_13,
+	MX6SL_PAD_SD1_DAT3__GPIO_5_6,
+	MX6SL_PAD_SD1_DAT4__GPIO_5_12,
+	MX6SL_PAD_SD1_DAT5__GPIO_5_9,
+	MX6SL_PAD_SD1_DAT6__GPIO_5_7,
+	MX6SL_PAD_SD1_DAT7__GPIO_5_10,
+
+        /*Camera */
+	MX6SL_PAD_SD2_CLK__GPIO_5_5,
+	MX6SL_PAD_SD2_CMD__GPIO_5_4,
+	MX6SL_PAD_SD2_DAT0__GPIO_5_1,
+	MX6SL_PAD_SD2_DAT1__GPIO_4_30,
+	MX6SL_PAD_SD2_DAT2__GPIO_5_3,
+	MX6SL_PAD_SD2_DAT3__GPIO_4_28,
+	MX6SL_PAD_SD2_DAT4__GPIO_5_2,
+	MX6SL_PAD_SD2_DAT5__GPIO_4_31,
+	MX6SL_PAD_SD2_DAT6__GPIO_4_29,
+	MX6SL_PAD_SD2_DAT7__GPIO_5_0,
+
+	MX6SL_PAD_ECSPI2_SCLK__GPIO_4_12,
+	MX6SL_PAD_ECSPI2_MISO__GPIO_4_14,
+	MX6SL_PAD_ECSPI2_MOSI__GPIO_4_13,
+	MX6SL_PAD_ECSPI2_SS0__GPIO_4_15,
+
+	MX6SL_PAD_LCD_RESET__GPIO_2_19,/* CMOS_RESET_B GPIO */
+	//MX6SL_PAD_EPDC_SDOE__GPIO_1_25,/* CMOS_PWDN GPIO */
+	MX6SL_PAD_LCD_ENABLE__GPIO_2_16,/* CMOS_PWDN GPIO */
+	MX6SL_PAD_EPDC_D8__GPIO_1_15,/*CAM_2.8V_EN*/
+	MX6SL_PAD_EPDC_D9__GPIO_1_16,/*CAM_1.5V_EN*/
+	MX6SL_PAD_EPDC_D10__GPIO_1_17,/*CAM_1.8V_EN*/
+	MX6SL_PAD_EPDC_D11__GPIO_1_18,/*FLASH_LED_CTL*/
+	MX6SL_PAD_EPDC_D12__GPIO_1_19,/*TORCH_CTL*/
+	
+	/*end*/
+//do not suspend ext SD pins
+	MX6SL_PAD_SD3_CLK__GPIO_5_18,
+	MX6SL_PAD_SD3_CMD__GPIO_5_21,
+	MX6SL_PAD_SD3_DAT0__GPIO_5_19,
+	MX6SL_PAD_SD3_DAT1__GPIO_5_20,
+	MX6SL_PAD_SD3_DAT2__GPIO_5_16,
+	MX6SL_PAD_SD3_DAT3__GPIO_5_17,
+
+	//MX6SL_PAD_LCD_DAT11__GPIO_2_31,/*cd */
+	/*32k clk*/
+	MX6SL_PAD_REF_CLK_32K__GPIO_3_22,
+	/*WIFI_SD4_CLK*/
+	MX6SL_PAD_FEC_MDIO__GPIO_4_20,
+	/*WIFI_SD4_CMD*/
+	MX6SL_PAD_FEC_TX_CLK__GPIO_4_21,
+	/*WIFI_SD4_DAT0*/
+	MX6SL_PAD_FEC_RX_ER__GPIO_4_19,
+	/*WIFI_SD4_DAT1*/
+	MX6SL_PAD_FEC_CRS_DV__GPIO_4_25,
+	/*WIFI_SD4_DAT2*/
+	MX6SL_PAD_FEC_RXD1__GPIO_4_18,
+	/*WIFI_SD4_DAT3*/
+	MX6SL_PAD_FEC_TXD0__GPIO_4_24,
+
+
+	/* USBOTG ID pin */
+	MX6SL_PAD_HSIC_STROBE__GPIO_3_20,
+	MX6SL_PAD_HSIC_DAT__GPIO_3_19,
+
+	/* Key row/column */
+//do not change state ext SD pins
+	MX6SL_PAD_KEY_COL0__GPIO_3_24, //SD_CD
+	MX6SL_PAD_KEY_COL1__GPIO_3_26, //SD_EN
+
+	MX6SL_PAD_KEY_COL2__GPIO_3_28,
+
+//do not change state eMMC0 reset pin
+	MX6SL_PAD_KEY_COL3__GPIO_3_30,
+
+	MX6SL_PAD_KEY_COL6__GPIO_4_4,
+	//MX6SL_PAD_KEY_COL7__GPIO_4_6,
+	MX6SL_PAD_KEY_ROW0__GPIO_3_25,
+	MX6SL_PAD_KEY_ROW1__GPIO_3_27,
+	MX6SL_PAD_KEY_ROW2__GPIO_3_29,
+	MX6SL_PAD_KEY_ROW3__GPIO_3_31,
+	MX6SL_PAD_KEY_ROW4__GPIO_4_1,
+	MX6SL_PAD_KEY_ROW5__GPIO_4_3,
+	//MX6SL_PAD_KEY_ROW6__GPIO_4_5,
+
+};
+
+static iomux_v3_cfg_t deep_suspend_exit_pads[ARRAY_SIZE(deep_suspend_enter_pads)];
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+#if defined(CONFIG_FB_MXC_EINK_PANEL)
+static iomux_v3_cfg_t mx6sl_brd_epdc_enable_pads[] = {
+	/* EPDC */
+	MX6SL_PAD_EPDC_D0__EPDC_SDDO_0,
+	MX6SL_PAD_EPDC_D1__EPDC_SDDO_1,
+	MX6SL_PAD_EPDC_D2__EPDC_SDDO_2,
+	MX6SL_PAD_EPDC_D3__EPDC_SDDO_3,
+	MX6SL_PAD_EPDC_D4__EPDC_SDDO_4,
+	MX6SL_PAD_EPDC_D5__EPDC_SDDO_5,
+	MX6SL_PAD_EPDC_D6__EPDC_SDDO_6,
+	MX6SL_PAD_EPDC_D7__EPDC_SDDO_7,
+	//MX6SL_PAD_EPDC_D8__EPDC_SDDO_8,
+	//MX6SL_PAD_EPDC_D9__EPDC_SDDO_9,
+	//MX6SL_PAD_EPDC_D10__EPDC_SDDO_10,
+	//MX6SL_PAD_EPDC_D11__EPDC_SDDO_11,
+	//MX6SL_PAD_EPDC_D12__EPDC_SDDO_12,
+	//MX6SL_PAD_EPDC_D13__EPDC_SDDO_13,
+	//MX6SL_PAD_EPDC_D14__EPDC_SDDO_14,
+	//MX6SL_PAD_EPDC_D15__EPDC_SDDO_15,
+
+	MX6SL_PAD_EPDC_GDCLK__EPDC_GDCLK,
+	MX6SL_PAD_EPDC_GDSP__EPDC_GDSP,
+	MX6SL_PAD_EPDC_GDOE__EPDC_GDOE,
+	//MX6SL_PAD_EPDC_GDRL__EPDC_GDRL,
+	MX6SL_PAD_EPDC_SDCLK__EPDC_SDCLK,
+	MX6SL_PAD_EPDC_SDOE__EPDC_SDOE,
+	MX6SL_PAD_EPDC_SDLE__EPDC_SDLE,
+	//MX6SL_PAD_EPDC_SDSHR__EPDC_SDSHR,
+	MX6SL_PAD_EPDC_BDR0__EPDC_BDR_0,
+	MX6SL_PAD_EPDC_SDCE0__EPDC_SDCE_0,
+	//MX6SL_PAD_EPDC_SDCE1__EPDC_SDCE_1,
+	//MX6SL_PAD_EPDC_SDCE2__EPDC_SDCE_2,
+
+	/* EPD PMIC (Maxim 17135,tps6518x) pins */
+	MX6SL_PAD_EPDC_VCOM0__GPIO_2_3,
+	MX6SL_PAD_EPDC_PWRCOM__GPIO_2_11,
+	MX6SL_PAD_EPDC_PWRINT__GPIO_2_12,
+	MX6SL_PAD_EPDC_PWRSTAT__GPIO_2_13,
+	MX6SL_PAD_EPDC_PWRCTRL0__GPIO_2_7,
+	MX6SL_PAD_EPDC_PWRWAKEUP__GPIO_2_14,
+};
+
+static iomux_v3_cfg_t mx6sl_brd_epdc_disable_pads[] = {
+	/* EPDC */
+	MX6SL_PAD_EPDC_D0__GPIO_1_7,
+	MX6SL_PAD_EPDC_D1__GPIO_1_8,
+	MX6SL_PAD_EPDC_D2__GPIO_1_9,
+	MX6SL_PAD_EPDC_D3__GPIO_1_10,
+	MX6SL_PAD_EPDC_D4__GPIO_1_11,
+	MX6SL_PAD_EPDC_D5__GPIO_1_12,
+	MX6SL_PAD_EPDC_D6__GPIO_1_13,
+	MX6SL_PAD_EPDC_D7__GPIO_1_14,
+	//MX6SL_PAD_EPDC_D8__GPIO_1_15,
+	//MX6SL_PAD_EPDC_D9__GPIO_1_16,
+	//MX6SL_PAD_EPDC_D10__GPIO_1_17,
+	//MX6SL_PAD_EPDC_D11__GPIO_1_18,
+	//MX6SL_PAD_EPDC_D12__GPIO_1_19,
+	//MX6SL_PAD_EPDC_D13__GPIO_1_20,
+	//MX6SL_PAD_EPDC_D14__GPIO_1_21,
+	//MX6SL_PAD_EPDC_D15__GPIO_1_22,
+
+	MX6SL_PAD_EPDC_GDCLK__GPIO_1_31,
+	MX6SL_PAD_EPDC_GDSP__GPIO_2_2,
+	MX6SL_PAD_EPDC_GDOE__GPIO_2_0,
+	MX6SL_PAD_EPDC_GDRL__GPIO_2_1,
+	MX6SL_PAD_EPDC_SDCLK__GPIO_1_23,
+	MX6SL_PAD_EPDC_SDOE__GPIO_1_25,
+	MX6SL_PAD_EPDC_SDLE__GPIO_1_24,
+	MX6SL_PAD_EPDC_SDSHR__GPIO_1_26,
+	MX6SL_PAD_EPDC_BDR0__GPIO_2_5,
+	MX6SL_PAD_EPDC_SDCE0__GPIO_1_27,
+	MX6SL_PAD_EPDC_SDCE1__GPIO_1_28,
+	MX6SL_PAD_EPDC_SDCE2__GPIO_1_29,
+
+	/* EPD PMIC (Maxim 17135) pins */
+	MX6SL_PAD_EPDC_VCOM0__GPIO_2_3,
+	MX6SL_PAD_EPDC_PWRCOM__GPIO_2_11,
+	MX6SL_PAD_EPDC_PWRINT__GPIO_2_12,
+	MX6SL_PAD_EPDC_PWRSTAT__GPIO_2_13,
+	MX6SL_PAD_EPDC_PWRCTRL0__GPIO_2_7,
+	MX6SL_PAD_EPDC_PWRWAKEUP__GPIO_2_14,
+};
+#endif
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+#if defined(CONFIG_FB_MXC_SIPIX_PANEL)
+static iomux_v3_cfg_t mx6sl_brd_spdc_enable_pads[] = {
+	/* SPDC data*/
+	MX6SL_PAD_EPDC_D0__TCON_E_DATA_0,
+	MX6SL_PAD_EPDC_D1__TCON_E_DATA_1,
+	MX6SL_PAD_EPDC_D2__TCON_E_DATA_2,
+	MX6SL_PAD_EPDC_D3__TCON_E_DATA_3,
+	MX6SL_PAD_EPDC_D4__TCON_E_DATA_4,
+	MX6SL_PAD_EPDC_D5__TCON_E_DATA_5,
+	MX6SL_PAD_EPDC_D6__TCON_E_DATA_6,
+	MX6SL_PAD_EPDC_D7__TCON_E_DATA_7,
+
+	MX6SL_PAD_EPDC_GDOE__TCON_YOEL,   /* AUO panel SIPIX_YOE */
+
+	MX6SL_PAD_EPDC_D9__TCON_E_DATA_9, /* AUO panel SIPIX_PWR_RDY*/
+
+	MX6SL_PAD_EPDC_SDCE2__TCON_YDIOUR, /* AUO panel SIPIX_YDIO */
+	MX6SL_PAD_EPDC_SDCE3__TCON_YDIODR, /* AUO panel SIPIX_YDIO */
+	MX6SL_PAD_EPDC_GDRL__TCON_YDIOUL,  /* AUO panel SIPIX_YDIO */
+	MX6SL_PAD_EPDC_GDSP__TCON_YDIODL,  /* SIPIX_YDIO/SIPIX2_SPV */
+
+	MX6SL_PAD_EPDC_GDCLK__TCON_YCKL,  /* SIPIX_YCLK/SIPIX2_CKV */
+
+	MX6SL_PAD_EPDC_SDSHR__TCON_XDIOR, /* AUO panel SIPIX_XDIO */
+	MX6SL_PAD_EPDC_SDOE__TCON_XDIOL,  /* SIPIX_XDIO/SIPIX2_OE */
+
+	MX6SL_PAD_EPDC_SDLE__TCON_LD,     /* SIPIX_LD/SIPIX2_LE */
+
+	MX6SL_PAD_EPDC_SDCE1__TCON_YOER,  /* AUO panel SIPIX_SOE */
+	MX6SL_PAD_EPDC_BDR0__TCON_RL,     /* AUO panel SIPIX_SOE */
+	MX6SL_PAD_EPDC_BDR1__TCON_UD,     /* AUO panel SIPIX_SOE */
+
+	MX6SL_PAD_EPDC_SDCLK__TCON_CL,    /* SIPIX_XCLK/SIPIX2_CL */
+
+	MX6SL_PAD_EPDC_D10__TCON_E_DATA_10, /* AUO panel SIPIX_SHD_N */
+
+	MX6SL_PAD_EPDC_SDCE0__TCON_YCKR,  /* LG panel SIPIX2_CE */
+
+	/* EPD PMIC (Maxim 17135) pins */
+	MX6SL_PAD_EPDC_VCOM0__GPIO_2_3, /* PMICA_CEN */
+	MX6SL_PAD_EPDC_PWRSTAT__GPIO_2_13,
+	MX6SL_PAD_EPDC_PWRCTRL0__GPIO_2_7,
+	MX6SL_PAD_EPDC_PWRWAKEUP__GPIO_2_14,
+};
+
+static iomux_v3_cfg_t mx6sl_brd_spdc_disable_pads[] = {
+	MX6SL_PAD_EPDC_D0__GPIO_1_7,
+	MX6SL_PAD_EPDC_D1__GPIO_1_8,
+	MX6SL_PAD_EPDC_D2__GPIO_1_9,
+	MX6SL_PAD_EPDC_D3__GPIO_1_10,
+	MX6SL_PAD_EPDC_D4__GPIO_1_11,
+	MX6SL_PAD_EPDC_D5__GPIO_1_12,
+	MX6SL_PAD_EPDC_D6__GPIO_1_13,
+	MX6SL_PAD_EPDC_D7__GPIO_1_14,
+
+	MX6SL_PAD_EPDC_SDCE1__GPIO_1_28,
+	MX6SL_PAD_EPDC_GDOE__GPIO_2_0,
+	MX6SL_PAD_EPDC_D9__GPIO_1_16,
+	MX6SL_PAD_EPDC_SDCE2__GPIO_1_29,
+	MX6SL_PAD_EPDC_SDCE3__GPIO_1_30,
+	MX6SL_PAD_EPDC_GDRL__GPIO_2_1,
+	MX6SL_PAD_EPDC_GDSP__GPIO_2_2,
+	MX6SL_PAD_EPDC_GDCLK__GPIO_1_31,
+	MX6SL_PAD_EPDC_SDSHR__GPIO_1_26,
+	MX6SL_PAD_EPDC_SDOE__GPIO_1_25,
+	MX6SL_PAD_EPDC_SDLE__GPIO_1_24,
+	MX6SL_PAD_EPDC_SDCE1__GPIO_1_28,
+	MX6SL_PAD_EPDC_BDR0__GPIO_2_5,
+	MX6SL_PAD_EPDC_BDR1__GPIO_2_6,
+	MX6SL_PAD_EPDC_SDCLK__GPIO_1_23,
+	MX6SL_PAD_EPDC_D10__GPIO_1_17,
+	MX6SL_PAD_EPDC_SDCE0__GPIO_1_27,
+
+	/* EPD PMIC (Maxim 17135) pins */
+	MX6SL_PAD_EPDC_VCOM0__GPIO_2_3,
+	MX6SL_PAD_EPDC_PWRSTAT__GPIO_2_13,
+	MX6SL_PAD_EPDC_PWRCTRL0__GPIO_2_7,
+	MX6SL_PAD_EPDC_PWRWAKEUP__GPIO_2_14,
+};
+#endif
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+#if (defined(CONFIG_MACH_MX6SL_EVK) && defined(CONFIG_VIDEO_MXC_CSI_CAMERA))
+ static int csi_enabled=1;
+
+static iomux_v3_cfg_t mx6sl_brd_csi_enable_pads[] = {
+	/*I2C2*/
+	//MX6SL_PAD_EPDC_SDCE3__I2C3_SDA,
+	//MX6SL_PAD_EPDC_SDCE2__I2C3_SCL,
+
+	MX6SL_PAD_ECSPI2_SS0__CSI_VSYNC,/*VSYNC*/
+	MX6SL_PAD_ECSPI2_MOSI__CSI_HSYNC,
+	MX6SL_PAD_ECSPI2_MISO__CSI_MCLK,
+	MX6SL_PAD_ECSPI2_SCLK__CSI_PIXCLK,
+	MX6SL_PAD_SD2_DAT7__CSI_D_9,
+	MX6SL_PAD_SD2_DAT6__CSI_D_8,
+	MX6SL_PAD_SD2_DAT5__CSI_D_7,
+	MX6SL_PAD_SD2_DAT4__CSI_D_6,
+	MX6SL_PAD_SD2_DAT3__CSI_D_5,
+	MX6SL_PAD_SD2_DAT2__CSI_D_4,
+	MX6SL_PAD_SD2_DAT1__CSI_D_3,
+	MX6SL_PAD_SD2_DAT0__CSI_D_2,
+	MX6SL_PAD_SD2_CMD__CSI_D_1,
+	MX6SL_PAD_SD2_CLK__CSI_D_0,
+
+	MX6SL_PAD_LCD_RESET__GPIO_2_19,/* CMOS_RESET_B GPIO */
+	//MX6SL_PAD_EPDC_SDOE__GPIO_1_25,/* CMOS_PWDN GPIO */
+	MX6SL_PAD_LCD_ENABLE__GPIO_2_16,/* CMOS_PWDN GPIO */
+	MX6SL_PAD_EPDC_D8__GPIO_1_15,/*CAM_2.8V_EN*/
+	MX6SL_PAD_EPDC_D9__GPIO_1_16,/*CAM_1.5V_EN*/
+	MX6SL_PAD_EPDC_D10__GPIO_1_17,/*CAM_1.8V_EN*/
+	MX6SL_PAD_EPDC_D11__GPIO_1_18,/*FLASH_LED_CTL*/
+	MX6SL_PAD_EPDC_D12__GPIO_1_19,/*TORCH_CTL*/
+};
+#endif
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+#if (defined(CONFIG_MACH_MX6SL_EVK) && defined(CONFIG_BT))
+#ifdef SXSDMAN_BLUETOOTH_ENABLE
+static iomux_v3_cfg_t mx6sl_uart4_pads[] = {
+	MX6SL_PAD_SD1_DAT4__UART4_RXD,
+	MX6SL_PAD_SD1_DAT5__UART4_TXD,
+	MX6SL_PAD_SD1_DAT6__UART4_RTS,
+	MX6SL_PAD_SD1_DAT7__UART4_CTS,
+	/* gpio for reset */
+	MX6SL_PAD_SD1_DAT0__GPIO_5_11,
+};
+#else
+/* uart2 pins */
+static iomux_v3_cfg_t mx6sl_uart2_pads[] = {
+	MX6SL_PAD_SD2_DAT5__UART2_TXD,
+	MX6SL_PAD_SD2_DAT4__UART2_RXD,
+	MX6SL_PAD_SD2_DAT6__UART2_RTS,
+	MX6SL_PAD_SD2_DAT7__UART2_CTS,
+};
+#endif
+#endif
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+#if defined(CONFIG_TOUCHSCREEN_CNT)
+static iomux_v3_cfg_t mx6sl_brd_cnt_pads[] = {
+        MX6SL_PAD_KEY_ROW6__GPIO_4_5,/*Power*/
+	MX6SL_PAD_KEY_COL5__GPIO_4_2,/* INT */
+	MX6SL_PAD_KEY_COL4__GPIO_4_0,/* RST */
+};
+#endif
+////////////////////////////////////////////////////////////
+////////cw2015  define
+/////// low battery notice, init as input ,when cw2015 check the device
+////// is in low battert,it will send a interrupts to cpu,
+///////////////////////////////////////////////////////////
+#if  defined(CONFIG_BATTERY_CW2015)
+static iomux_v3_cfg_t mx6sl_brd_cw2015_pads[] = {
+	     MX6SL_PAD_KEY_ROW7__GPIO_4_7,
+};
+#endif
+////////////////////////////////////////////////////////////
+////////usb charger define
+///////////////////////////////////////////////////////////
+#if defined(CONFIG_IMX_USB_CHARGER)
+static iomux_v3_cfg_t mx6sl_brd_chargertype_pads[]={
+	/*Charge_current_SET*/
+	MX6SL_PAD_FEC_TXD1__GPIO_4_16,
+};
+#endif
+////////////////////////////////////////////////
+/////pfuze100 pmic int 
+////////////////////////////////////////////////
+#if defined(CONFIG_MFD_PFUZE)
+static iomux_v3_cfg_t mx6sl_brd_pfuze100_pads[]={
+	/*GPIO3_IO21*/
+	MX6SL_PAD_REF_CLK_24M__GPIO_3_21,
+};
+
+#endif
+////////////////////////////////////////////////
+/////wifi 
+////////////////////////////////////////////////
+static iomux_v3_cfg_t mx6sl_brd_wifi_pads[] = {
+        /*power */
+	MX6SL_PAD_KEY_COL6__GPIO_4_4,
+	/*reset*/
+	MX6SL_PAD_KEY_COL7__GPIO_4_6,
+};
+
+/////////////////////////////////////////////////
+///GPIO button define
+/////////////////////////////////////////////////
+#if defined(CONFIG_KEYBOARD_GPIO) || defined(CONFIG_KEYBOARD_GPIO_MODULE)
+static iomux_v3_cfg_t mx6sl_brd_gpio_pads[]={
+        /*Power key*/
+	MX6SL_PAD_FEC_MDC__GPIO_4_23,
+  	/*menu*/
+	MX6SL_PAD_KEY_ROW0__GPIO_3_25,
+	/*home*/
+	MX6SL_PAD_KEY_ROW1__GPIO_3_27,
+	/*left*/
+	MX6SL_PAD_KEY_ROW2__GPIO_3_29,
+	/*right*/
+	MX6SL_PAD_KEY_ROW3__GPIO_3_31,
+	/*up*/
+	MX6SL_PAD_KEY_ROW4__GPIO_4_1,
+	/*down*/
+	MX6SL_PAD_KEY_ROW5__GPIO_4_3,
+};
+
+#endif
+/////////////////////////////////////////////////
+
+
+#define MX6SL_USDHC_8BIT_PAD_SETTING(id, speed)	\
+mx6sl_sd##id##_##speed##mhz[] = {		\
+	MX6SL_PAD_SD##id##_CLK__USDHC##id##_CLK_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_CMD__USDHC##id##_CMD_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT0__USDHC##id##_DAT0_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT1__USDHC##id##_DAT1_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT2__USDHC##id##_DAT2_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT3__USDHC##id##_DAT3_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT4__USDHC##id##_DAT4_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT5__USDHC##id##_DAT5_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT6__USDHC##id##_DAT6_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT7__USDHC##id##_DAT7_##speed##MHZ,	\
+}
+#define MX6SL_USDHC_4BIT_PAD_SETTING(id, speed)	\
+mx6sl_sd##id##_##speed##mhz[] = {		\
+	MX6SL_PAD_SD##id##_CLK__USDHC##id##_CLK_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_CMD__USDHC##id##_CMD_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT0__USDHC##id##_DAT0_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT1__USDHC##id##_DAT1_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT2__USDHC##id##_DAT2_##speed##MHZ,	\
+	MX6SL_PAD_SD##id##_DAT3__USDHC##id##_DAT3_##speed##MHZ,	\
+}
+
+#define MX6SL_USDHC4_4BIT_PAD_SETTING(id, speed)	\
+mx6sl_sd##id##_##speed##mhz[] = {		\
+	MX6SL_PAD_FEC_MDIO__USDHC##id##_CLK_##speed##MHZ,\
+	MX6SL_PAD_FEC_TX_CLK__USDHC##id##_CMD_##speed##MHZ,\
+	MX6SL_PAD_FEC_RX_ER__USDHC##id##_DAT0_##speed##MHZ,\
+	MX6SL_PAD_FEC_CRS_DV__USDHC##id##_DAT1_##speed##MHZ,\
+	MX6SL_PAD_FEC_RXD1__USDHC##id##_DAT2_##speed##MHZ,\
+	MX6SL_PAD_FEC_TXD0__USDHC##id##_DAT3_##speed##MHZ,\
+}
+
+static iomux_v3_cfg_t MX6SL_USDHC_8BIT_PAD_SETTING(1, 50);
+static iomux_v3_cfg_t MX6SL_USDHC_8BIT_PAD_SETTING(1, 100);
+static iomux_v3_cfg_t MX6SL_USDHC_8BIT_PAD_SETTING(1, 200);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(2, 50);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(2, 100);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(2, 200);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(3, 50);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(3, 100);
+static iomux_v3_cfg_t MX6SL_USDHC_4BIT_PAD_SETTING(3, 200);
+static iomux_v3_cfg_t MX6SL_USDHC4_4BIT_PAD_SETTING(4, 50);
+static iomux_v3_cfg_t MX6SL_USDHC4_4BIT_PAD_SETTING(4, 100);
+static iomux_v3_cfg_t MX6SL_USDHC4_4BIT_PAD_SETTING(4, 200);
+#endif

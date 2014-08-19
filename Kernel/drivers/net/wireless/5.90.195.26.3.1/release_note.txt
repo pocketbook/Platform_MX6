@@ -1,0 +1,21 @@
+Driver:
+  5.90.195.26.3:
+    1. Enable ARP offload and Packet Filter by default.
+    2. Add 43362A0 firmware
+  5.90.195.26.2:
+    1. Fix hidden AP can't be scan problem in single band firmware.
+    2. Fix may not set back to PM 1 when obtain ip address in early_suspend
+    3. Add delay when wapi get/set key to avoid wapi failure.
+    4. Fix hostapd initialize failure when enable wps
+    5. Add protect in dhd_ioctl_entry
+    6. Reduce response timeout from 20000 ms to 2000 ms
+    7. Fix op_mode incorrect when enable p2p function.
+    8. Fix P2P Sigma Tests 6.1.1 and 6.1.3 are failing with Atheros cards with Wifi Allicance Sigma Release 5.0.0
+
+Firmware:
+  5.90.195.26.2:
+    1. Apply rssi_offset to scan results
+    2. Fix p2p can't work when GET_CUSTOM_MAC_ENABLE in driver.		
+    3. Fix ampdu cause traffic stop/system hang/ampdu error problem in SoftAP mode
+    4. Remove pmkid created from external supplicant only when cache hit.
+    5. Bug fix for not receiving deauth packet from GO

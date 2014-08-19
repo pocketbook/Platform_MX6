@@ -1,0 +1,2 @@
+---- alloc_etherdev_mqs Matches (1 in 1 files) ----
+8188eu.mod.c:	{ 0x418afaf7, "alloc_etherdev_mqs" },

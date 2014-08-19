@@ -1,0 +1,26 @@
+# Copied from bcm94336sdg.txt, same WLBGA pkg, same control logic.
+manfid=0x2d0
+prodid=0x492
+vendid=0x14e4
+devid=0x4343
+boardtype=0x0595
+boardrev=0x20
+boardnum=777
+xtalfreq=26000
+boardflags=0xa00
+sromrev=3
+wl0id=0x431b
+macaddr=00:90:4c:04:6${maclo12}
+aa0=3
+ag0=2
+pa0maxpwr=80
+pa0b0=5950
+pa0b1=-710
+pa0b2=-188
+cckPwrOffset=4
+ccode=0
+rssismf2g=0xa
+rssismc2g=0x3
+rssisav2g=0x7
+swctrlmap_2g=0x04040404,0x02020202,0x02020202,0x010101,0x1ff
+maxp2ga0=0x4c

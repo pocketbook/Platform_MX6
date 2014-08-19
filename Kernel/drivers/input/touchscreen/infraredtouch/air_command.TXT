@@ -1,0 +1,3 @@
+echo start > /sys/class/input/event2/device/diagnostic
+echo status > /sys/class/input/event2/device/diagnostic; cat /sys/class/input/event2/device/diagnostic
+ i=0; while [ $i -lt 10 ]; do echo level > /sys/class/input/event2/device/diagnostic; cat /sys/class/input/event2/device/diagnostic; let i=$i+1; done

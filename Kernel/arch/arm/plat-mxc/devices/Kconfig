@@ -1,0 +1,199 @@
+menuconfig FREESCALE_PLATFORM_SUPPORT
+    tristate "freescale platform support"
+    default y
+
+if FREESCALE_PLATFORM_SUPPORT
+
+config IMX_HAVE_PLATFORM_DMA
+	bool "platform suport DMA"
+
+config IMX_HAVE_PLATFORM_MXC_MLB
+	bool "platform mxc suport  MLB"
+
+config IMX_HAVE_PLATFORM_FEC
+	bool "platform suport  FEC"
+	default y if ARCH_MX25 || SOC_IMX27 || SOC_IMX35 || SOC_IMX51 || SOC_IMX53
+
+config IMX_HAVE_PLATFORM_FLEXCAN
+	select HAVE_CAN_FLEXCAN if CAN
+	bool "platform suport FLEXCAN"
+
+config IMX_HAVE_PLATFORM_FSL_USB2_UDC
+	bool "platform suport USB2 UDC"
+
+config IMX_HAVE_PLATFORM_GPIO_KEYS
+	bool "platform suport GPIO Keys"
+	default y if SOC_IMX51
+
+config IMX_HAVE_PLATFORM_GPMI_NFC
+	bool "platform suport GPMI NFC"
+
+config IMX_HAVE_PLATFORM_IMX21_HCD
+	bool "platform suport IMX21 HCD"
+
+config IMX_HAVE_PLATFORM_IMX2_WDT
+	bool "platform suport IMX2 WDT"
+
+config IMX_HAVE_PLATFORM_IMXDI_RTC
+	bool "platform support IMXDI RTC"
+
+config IMX_HAVE_PLATFORM_IMX_SRTC
+	bool "platform suport IMX SRTC"
+
+config IMX_HAVE_PLATFORM_IMX_SNVS_RTC
+	bool "platform suport SNVS RTC"
+
+config IMX_HAVE_PLATFORM_IMX_CAAM
+	bool "platform suport IMX CAAM"
+	default y if SOC_IMX6Q
+
+config IMX_HAVE_PLATFORM_IMX_FB
+	bool "platform suport IMX FB"
+	select HAVE_FB_IMX
+
+config IMX_HAVE_PLATFORM_IMX_I2C
+	bool "platform suport IMX I2C"
+
+config IMX_HAVE_PLATFORM_IMX_KEYPAD
+	bool "platform suport IMX keypad"
+
+config IMX_HAVE_PLATFORM_IMX_SSI
+	bool "platform suport IMX SSI"
+
+config IMX_HAVE_PLATFORM_IMX_ESAI
+	bool "platform suport IMX esai"
+
+config IMX_HAVE_PLATFORM_IMX_UART
+	bool "platform suport IMX uart"
+
+config IMX_HAVE_PLATFORM_IMX_UDC
+	bool "platform suport IMX UDC"
+
+config IMX_HAVE_PLATFORM_IPU_CORE
+	bool "platform suport IPU core"
+
+config IMX_HAVE_PLATFORM_MX1_CAMERA
+	bool "platform suport MX1 camera"
+
+config IMX_HAVE_PLATFORM_MX2_CAMERA
+	bool "platform suport MX2 camera"
+
+config IMX_HAVE_PLATFORM_MXC_EHCI
+	bool "platform suport MXC ehci"
+
+config IMX_HAVE_PLATFORM_MXC_MMC
+	bool "platform suport MXC mmc"
+
+config IMX_HAVE_PLATFORM_MXC_NAND
+	bool "platform suport MXC nand"
+
+config IMX_HAVE_PLATFORM_MXC_PWM
+	bool "platform suport MXC pwm"
+
+config IMX_HAVE_PLATFORM_MXC_RNGA
+	bool "platform suport MXC rnga"
+	select ARCH_HAS_RNGA
+
+config IMX_HAVE_PLATFORM_MXC_RTC
+	bool "platform suport MXC RTC"
+
+config IMX_HAVE_PLATFORM_MXC_W1
+	bool "platform suport MXC W1"
+
+config IMX_HAVE_PLATFORM_SDHCI_ESDHC_IMX
+	bool "platform suport SDHCI ESDHC IMX"
+
+config IMX_HAVE_PLATFORM_SPI_IMX
+	bool "platform suport IMX SPI"
+
+config IMX_HAVE_PLATFORM_IMX_IPUV3
+	bool "platform suport IMX IPUV3"
+
+config IMX_HAVE_PLATFORM_IMX_TVE
+	bool "platform suport IMX TVE"
+
+config IMX_HAVE_PLATFORM_IMX_VPU
+	bool "platform suport  IMX VPU"
+
+config IMX_HAVE_PLATFORM_IMX_DVFS
+	bool "platform suport IMX DVFS"
+
+config IMX_HAVE_PLATFORM_AHCI
+	bool "platform suport AHCI"
+
+config IMX_HAVE_PLATFORM_IMX_IIM
+	bool "platform suport IMX IIM"
+
+config IMX_HAVE_PLATFORM_MXC_GPU
+	bool "platform suport MXC GPU"
+	
+config IMX_HAVE_PLATFORM_IMX_OCOTP
+	bool "platform suport IMX OCOTP "
+
+config IMX_HAVE_PLATFORM_IMX_VIIM
+	bool "platform suport IMX VIIM"
+
+config IMX_HAVE_PLATFORM_IMX_DCP
+	bool "platform suport IMX DCP"
+
+config IMX_HAVE_PLATFORM_RANDOM_RNGC
+	bool "platform suport Random Rngc"
+
+config IMX_HAVE_PLATFORM_PERFMON
+	bool "platform suport Perfmon"
+
+config IMX_HAVE_PLATFORM_LDB
+	bool "platform suport LDB"
+
+config IMX_HAVE_PLATFORM_IMX_PXP
+	bool "platform suport IMX PXP"
+
+config IMX_HAVE_PLATFORM_IMX_ELCDIF
+	bool "platform suport IMX Elcdif"
+
+config IMX_HAVE_PLATFORM_IMX_EPDC
+	bool "platform suport IMX Epdc"
+
+config IMX_HAVE_PLATFORM_IMX_SPDC
+	bool "platform suport IMX Spdc"
+
+config IMX_HAVE_PLATFORM_IMX_SPDIF
+	bool "platform suport IMX Spdif"
+
+config IMX_HAVE_PLATFORM_VIV_GPU
+    bool "platform suport VIV GPU"
+
+config IMX_HAVE_PLATFORM_MXC_HDMI
+	bool "platform suport MXC Hdmi"
+
+config IMX_HAVE_PLATFORM_IMX_ANATOP_THERMAL
+	bool "platform suport IMX Anatop thermal"
+
+config IMX_HAVE_PLATFORM_FSL_OTG
+	bool "platform suport FSL otg"
+
+config IMX_HAVE_PLATFORM_FSL_USB_WAKEUP
+	bool "platform suport  FSL usb wakeup"
+
+config IMX_HAVE_PLATFORM_IMX_PM
+	bool "platform suport IMX PM"
+
+config IMX_HAVE_PLATFORM_IMX_ASRC
+	bool "platform suport IMX Asrc"
+
+config IMX_HAVE_PLATFORM_IMX_MIPI_DSI
+	bool "platform suport IMX mipi dsi"
+
+config IMX_HAVE_PLATFORM_IMX_MIPI_CSI2
+	bool "platform suport IMX mipi csi2"
+
+config IMX_HAVE_PLATFORM_IMX_VDOA
+	bool "platform suport IMX VDOA"
+
+config IMX_HAVE_PLATFORM_IMX_PCIE
+	bool "platform suport IMX Pcie"
+
+config IMX_HAVE_PLATFORM_IMX_FSL_CSI
+	bool "platform imx fsl csi support"
+
+endif

@@ -1,0 +1,568 @@
+/*
+* imx-wm8962.c
+*
+* Copyright (C) 2012 Freescale Semiconductor, Inc. All Rights Reserved.
+*/
+
+/*
+* The code contained herein is licensed under the GNU General Public
+* License. You may obtain a copy of the GNU General Public License
+* Version 2 or later at the following locations:
+*
+* http://www.opensource.org/licenses/gpl-license.html
+* http://www.gnu.org/copyleft/gpl.html
+*/
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <linux/pm.h>
+#include <linux/bitops.h>
+#include <linux/platform_device.h>
+#include <linux/i2c.h>
+#include <linux/err.h>
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/fsl_devices.h>
+#include <linux/slab.h>
+#include <linux/clk.h>
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/soc.h>
+#include <sound/soc-dapm.h>
+#include <sound/initval.h>
+#include <sound/jack.h>
+#include <mach/dma.h>
+#include <mach/clock.h>
+#include <mach/audmux.h>
+#include <mach/gpio.h>
+#include <asm/mach-types.h>
+
+#include "imx-ssi.h"
+#include <linux/mfd/tlv320aic3xxx-core.h>
+#include "../codecs/tlv320aic325x.h"
+
+struct imx_priv {
+	int sysclk;         /*mclk from the outside*/
+	int codec_sysclk;
+	int dai_hifi;
+	int hp_irq;
+	int hp_status;
+	int amic_irq;
+	int amic_status;
+	struct platform_device *pdev;
+};
+unsigned int aic325x_sample_format = SNDRV_PCM_FMTBIT_S16_LE;
+static struct imx_priv aic325x_card_priv;
+//static struct snd_soc_card snd_soc_aic325x_card_imx;
+static struct snd_soc_codec *aic325x_gcodec;
+
+static int imx_aic325x_hifi_startup(struct snd_pcm_substream *substream)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct mxc_audio_platform_data *plat = priv->pdev->dev.platform_data;
+//	printk("[%s]\n",__func__);
+	if (!codec_dai->active) {
+		plat->init();
+		plat->clock_enable(1);
+	}
+
+	return 0;
+}
+
+static void imx_aic325x_hifi_shutdown(struct snd_pcm_substream *substream)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct mxc_audio_platform_data *plat = priv->pdev->dev.platform_data;
+//	printk("[%s]\n",__func__);
+	if (!codec_dai->active)
+		plat->clock_enable(0);
+
+	return;
+}
+
+static int imx_aic325x_hifi_hw_params(struct snd_pcm_substream *substream,
+                                                                    struct snd_pcm_hw_params *params)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct imx_priv *priv = &aic325x_card_priv;
+	unsigned int channels = params_channels(params);
+	unsigned int sample_rate = 44100;
+	int ret = 0;
+	u32 dai_format;
+	unsigned int pll_out;
+
+	struct mxc_audio_platform_data *plat = priv->pdev->dev.platform_data;
+//	printk("[%s]\n",__func__);
+
+	/* set i.MX active slot mask */
+	snd_soc_dai_set_tdm_slot(cpu_dai,
+		channels == 1 ? 0xfffffffe : 0xfffffffc,
+		channels == 1 ? 0xfffffffe : 0xfffffffc,
+		2, 32);
+
+	dai_format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
+		SND_SOC_DAIFMT_CBM_CFM;
+
+	/* set cpu DAI configuration */
+	ret = snd_soc_dai_set_fmt(cpu_dai, dai_format);
+	if (ret < 0)
+		return ret;
+
+	sample_rate = params_rate(params);
+	aic325x_sample_format = params_format(params);
+
+	if (aic325x_sample_format == SNDRV_PCM_FORMAT_S24_LE)
+		pll_out = sample_rate * 192;
+	else
+		pll_out = sample_rate * 256;
+
+	ret = snd_soc_dai_set_pll(codec_dai,
+		AIC325X_PLL_ID,
+		AIC325X_PLL_MCLK,
+		plat->sysclk,
+		//priv->sysclk,
+		pll_out);
+	if (ret < 0)
+		pr_err("Failed to start FLL: %d\n", ret);
+
+	ret = snd_soc_dai_set_sysclk(codec_dai,
+		AIC325X_SYSCLK_FLL,
+		pll_out,
+		SND_SOC_CLOCK_IN);
+	if (ret < 0) {
+		pr_err("Failed to set SYSCLK: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+//#if 0
+//static const struct snd_kcontrol_new controls[] = {
+//	SOC_DAPM_PIN_SWITCH("Ext Spk"),
+//};
+//
+///* imx card dapm widgets */
+//static const struct snd_soc_dapm_widget imx_aic325x_dapm_widgets[] = {
+//	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+//	SND_SOC_DAPM_SPK("Ext Spk", NULL),
+//	SND_SOC_DAPM_MIC("AMIC", NULL),
+//	SND_SOC_DAPM_MIC("DMIC", NULL),
+//};
+//
+///* imx machine connections to the codec pins */
+//static const struct snd_soc_dapm_route aic325x_audio_map[] = {
+//	{ "Headphone Jack", NULL, "HPOUTL" },
+//	{ "Headphone Jack", NULL, "HPOUTR" },
+//
+//	{ "Ext Spk", NULL, "SPKOUTL" },
+//	{ "Ext Spk", NULL, "SPKOUTR" },
+//
+//	{ "MICBIAS", NULL, "AMIC" },
+//	{ "IN3R", NULL, "MICBIAS" },
+//
+//	{ "DMIC", NULL, "MICBIAS" },
+//	{ "DMICDAT", NULL, "DMIC" },
+//
+//};
+//#endif
+extern int aic3256_hs_jack_get(void);
+static void headphone_detect_handler(struct work_struct *wor)
+{
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct platform_device *pdev = priv->pdev;
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+	char *envp[3];
+	char *buf;
+	bool bMic = false;
+
+	/*sysfs_notify(&pdev->dev.kobj, NULL, "headphone");*/
+	priv->hp_status = gpio_get_value(plat->hp_gpio);
+
+	//not use mic
+	//bMic = aic3256_hs_jack_get();
+
+	printk("%s %s %d priv->hp_status =%d\n",__FILE__,__func__,__LINE__,priv->hp_status);
+	/* setup a message for userspace headphone in */
+	buf = kmalloc(32, GFP_ATOMIC);
+	if (!buf) {
+		pr_err("%s kmalloc failed\n", __func__);
+		return;
+	}
+
+	if (priv->hp_status != plat->hp_active_low){
+		//headphone had inserted
+		snprintf(buf, 32, "STATE=%d", 2);
+		///unmute the mic
+	}else{
+		//speaker,mute the mic.
+		snprintf(buf, 32, "STATE=%d", 0);
+	}
+
+	if(bMic)
+	{
+		envp[0] = "NAME=headset";
+	}
+	else
+	{
+	envp[0] = "NAME=headphone";
+	}
+	envp[1] = buf;
+	envp[2] = NULL;
+	kobject_uevent_env(&pdev->dev.kobj, KOBJ_CHANGE, envp);
+	kfree(buf);
+
+	enable_irq(priv->hp_irq);
+
+	return;
+}
+
+static DECLARE_DELAYED_WORK(hp_event, headphone_detect_handler);
+
+static irqreturn_t imx_headphone_detect_handler(int irq, void *data)
+{
+	//printk("%s %s %d \n",__FILE__,__func__,__LINE__); 
+	disable_irq_nosync(irq);
+	schedule_delayed_work(&hp_event, msecs_to_jiffies(700));
+	return IRQ_HANDLED;
+}
+
+static ssize_t show_headphone(struct device_driver *dev, char *buf)
+{
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct platform_device *pdev = priv->pdev;
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+	bool bMic = false;
+
+	/* determine whether hp is plugged in */
+
+	/*
+	priv->hp_status = gpio_get_value(plat->hp_gpio);
+	bMic = aic3256_hs_jack_get();
+	*/
+
+	//printk("%s %s %d priv->hp_status=%d,plat->hp_active_low=%d,bMic=%d\n",__FILE__,__func__,__LINE__,priv->hp_status,plat->hp_active_low,bMic); 
+	if (priv->hp_status != plat->hp_active_low){
+		if(bMic)
+		   strcpy(buf, "headset\n");
+		else
+		  strcpy(buf, "headphone\n");
+	}else{
+		strcpy(buf, "speaker\n");
+	}
+
+	return strlen(buf);
+}
+
+static DRIVER_ATTR(headphone, S_IRUGO | S_IWUSR, show_headphone, NULL);
+
+static void amic_detect_handler(struct work_struct *work)
+{
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct platform_device *pdev = priv->pdev;
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+	char *envp[3];
+	char *buf;
+
+	/* sysfs_notify(&pdev->dev.kobj, NULL, "amic"); */
+	priv->amic_status = gpio_get_value(plat->mic_gpio);
+	//#if 0
+	///* if amic is inserted, disable dmic */
+	//if (priv->amic_status != plat->mic_active_low)
+	//	snd_soc_dapm_nc_pin(&aic325x_gcodec->dapm, "DMIC");
+	//else
+	//	snd_soc_dapm_enable_pin(&aic325x_gcodec->dapm, "DMIC");
+	//#endif
+	/* setup a message for userspace headphone in */
+	buf = kmalloc(32, GFP_ATOMIC);
+	if (!buf) {
+		pr_err("%s kmalloc failed\n", __func__);
+		return;
+	}
+
+	if (priv->amic_status == 0)
+		snprintf(buf, 32, "STATE=%d", 2);
+	else
+		snprintf(buf, 32, "STATE=%d", 0);
+
+	envp[0] = "NAME=amic";
+	envp[1] = buf;
+	envp[2] = NULL;
+	kobject_uevent_env(&pdev->dev.kobj, KOBJ_CHANGE, envp);
+	kfree(buf);
+
+	enable_irq(priv->amic_irq);
+}
+
+static DECLARE_DELAYED_WORK(amic_event, amic_detect_handler);
+
+static irqreturn_t imx_amic_detect_handler(int irq, void *data)
+{
+	disable_irq_nosync(irq);
+	schedule_delayed_work(&amic_event, msecs_to_jiffies(200));
+	return IRQ_HANDLED;
+}
+
+static ssize_t show_amic(struct device_driver *dev, char *buf)
+{
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct platform_device *pdev = priv->pdev;
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+
+	/* determine whether amic is plugged in */
+	priv->amic_status = gpio_get_value(plat->hp_gpio);
+
+	if (priv->amic_status != plat->mic_active_low)
+		strcpy(buf, "amic\n");
+	else
+		strcpy(buf, "dmic\n");
+
+	return strlen(buf);
+}
+
+static DRIVER_ATTR(amic, S_IRUGO | S_IWUSR, show_amic, NULL);
+
+static int imx_aic325x_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_codec *codec = rtd->codec;
+	struct imx_priv *priv = &aic325x_card_priv;
+	struct platform_device *pdev = priv->pdev;
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+	int ret = 0;
+
+	aic325x_gcodec = rtd->codec;
+	//#if 0
+	///* Add imx specific widgets */
+	//snd_soc_dapm_new_controls(&codec->dapm, imx_aic325x_dapm_widgets,
+	//			  ARRAY_SIZE(imx_aic325x_dapm_widgets));
+	//
+	///* Set up imx specific audio path audio_map */
+	//snd_soc_dapm_add_routes(&codec->dapm, aic325x_audio_map, ARRAY_SIZE(aic325x_audio_map));
+	///
+	//snd_soc_dapm_enable_pin(&codec->dapm, "Headphone Jack");
+	//snd_soc_dapm_enable_pin(&codec->dapm, "AMIC");
+	//snd_soc_dapm_sync(&codec->dapm);
+	//#endif
+	//printk("%s %s %d plat->hp_gpio=%d\n",__FILE__,__func__,__LINE__,plat->hp_gpio); 
+	if (plat->hp_gpio != -1) {
+		///init as input mode///
+		ret = gpio_request(plat->hp_gpio, "hpgpio");
+		if (ret) {
+			pr_err("failed to get GPIO[hpgpio]:%d\n", ret);
+			return ret;
+		}
+		gpio_direction_input(plat->hp_gpio);
+
+		
+		priv->hp_irq = gpio_to_irq(plat->hp_gpio);
+		//printk("%s %s %d priv->hp_irq =%d\n",__FILE__,__func__,__LINE__,priv->hp_irq ); 
+		ret = request_irq(priv->hp_irq,
+			imx_headphone_detect_handler,
+			IRQ_TYPE_EDGE_BOTH, 
+			pdev->name,
+			priv);
+
+		if (ret < 0) {
+			ret = -EINVAL;
+			return ret;
+		}
+
+		ret = driver_create_file(pdev->dev.driver,
+			&driver_attr_headphone);
+		if (ret < 0) {
+			ret = -EINVAL;
+			return ret;
+		}
+	}
+
+	if (plat->mic_gpio != -1) {
+		///init as input mode///
+		ret = gpio_request(plat->mic_gpio, "micgpio");
+		if (ret) {
+			pr_err("failed to get GPIO[mic_gpio]:%d\n", ret);
+			return ret;
+		}
+		gpio_direction_input(plat->mic_gpio);
+		
+		priv->amic_irq = gpio_to_irq(plat->mic_gpio);
+
+		ret = request_irq(priv->amic_irq,
+			imx_amic_detect_handler,
+			IRQ_TYPE_EDGE_BOTH, pdev->name, priv);
+
+		if (ret < 0) {
+			ret = -EINVAL;
+			return ret;
+		}
+
+		ret = driver_create_file(pdev->dev.driver, &driver_attr_amic);
+		if (ret < 0) {
+			ret = -EINVAL;
+			return ret;
+		}
+
+		priv->amic_status = gpio_get_value(plat->mic_gpio);
+		//#if 0
+		//		/* if amic is inserted, disable DMIC */
+		//		if (priv->amic_status != plat->mic_active_low)
+		//			snd_soc_dapm_nc_pin(&codec->dapm, "DMIC");
+		//		else
+		//			snd_soc_dapm_enable_pin(&codec->dapm, "DMIC");
+		//#endif			
+	} 
+	//#if 0
+	//	else if (!snd_soc_dapm_get_pin_status(&codec->dapm, "DMICDAT"))
+	//		snd_soc_dapm_nc_pin(&codec->dapm, "DMIC");
+	//#endif	
+	return 0;
+}
+
+static struct snd_soc_ops imx_aic325x_hifi_ops = {
+	.startup = imx_aic325x_hifi_startup,
+	.shutdown = imx_aic325x_hifi_shutdown,
+	.hw_params = imx_aic325x_hifi_hw_params,
+};
+
+static struct snd_soc_dai_link imx_aic325x_dai[] = {
+	{
+		.name = "HiFi",
+			.stream_name = "HiFi",
+			.codec_dai_name	= "tlv320aic325x-MM_EXT",
+			.codec_name	= AIC3256_CODEC_NAME,
+			.cpu_dai_name	= "imx-ssi.1",
+			.platform_name	= "imx-pcm-audio.1",
+			.init		= imx_aic325x_init,
+			.ops		= &imx_aic325x_hifi_ops,
+	},
+};
+
+
+static struct snd_soc_card snd_soc_aic325x_card_imx = {
+	.name		= "aic325x-audio",
+	.dai_link	= imx_aic325x_dai,
+	.num_links	= ARRAY_SIZE(imx_aic325x_dai),
+};
+
+static int imx_audmux_config(int slave, int master)
+{
+	unsigned int ptcr, pdcr;
+	slave = slave - 1;
+	master = master - 1;
+
+	ptcr = MXC_AUDMUX_V2_PTCR_SYN |
+		MXC_AUDMUX_V2_PTCR_TFSDIR |
+		MXC_AUDMUX_V2_PTCR_TFSEL(master) |
+		MXC_AUDMUX_V2_PTCR_TCLKDIR |
+		MXC_AUDMUX_V2_PTCR_TCSEL(master);
+	pdcr = MXC_AUDMUX_V2_PDCR_RXDSEL(master);
+	mxc_audmux_v2_configure_port(slave, ptcr, pdcr);
+
+	ptcr = MXC_AUDMUX_V2_PTCR_SYN;
+	pdcr = MXC_AUDMUX_V2_PDCR_RXDSEL(slave);
+	mxc_audmux_v2_configure_port(master, ptcr, pdcr);
+
+	return 0;
+}
+
+/*
+* This function will register the snd_soc_pcm_link drivers.
+*/
+static int __devinit imx_aic325x_probe(struct platform_device *pdev)
+{
+
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+	struct imx_priv *priv = &aic325x_card_priv;
+	int ret = 0;
+
+	priv->pdev = pdev;
+
+	imx_audmux_config(plat->src_port, plat->ext_port);
+
+	if (plat->init && plat->init()) {
+		ret = -EINVAL;
+		return ret;
+	}
+
+	priv->sysclk = plat->sysclk;
+
+	//printk("%s %s %d plat->sysclk=%d,priv->sysclk=%d\n",__FILE__,__func__,__LINE__,plat->sysclk,priv->sysclk); 
+
+	return ret;
+}
+
+static int __devexit imx_aic325x_remove(struct platform_device *pdev)
+{
+	struct mxc_audio_platform_data *plat = pdev->dev.platform_data;
+
+	plat->clock_enable(0);
+
+	if (plat->finit)
+		plat->finit();
+
+	return 0;
+}
+
+static struct platform_driver imx_aic325x_driver = {
+	.probe = imx_aic325x_probe,
+	.remove = imx_aic325x_remove,
+	.driver = {
+		.name = AIC3256_IMX_NAME,
+		.owner = THIS_MODULE,
+	},
+};
+
+static struct platform_device *imx_snd_aic325x_device;
+
+static int __init imx_asoc_init(void)
+{
+	int ret;
+
+	ret = platform_driver_register(&imx_aic325x_driver);
+	if (ret < 0)
+		goto exit;
+
+	//if (machine_is_mx6q_sabresd())
+	//	imx_dai[0].codec_name = "wm8962.0-001a";
+	//else if (machine_is_mx6sl_arm2() | machine_is_mx6sl_evk())
+	//	imx_dai[0].codec_name = "wm8962.1-001a";
+
+	imx_snd_aic325x_device = platform_device_alloc("soc-audio", 5);
+	if (!imx_snd_aic325x_device)
+		goto err_device_alloc;
+
+	platform_set_drvdata(imx_snd_aic325x_device, &snd_soc_aic325x_card_imx);
+
+	ret = platform_device_add(imx_snd_aic325x_device);
+
+	if (0 == ret)
+		goto exit;
+
+	platform_device_put(imx_snd_aic325x_device);
+
+err_device_alloc:
+	platform_driver_unregister(&imx_aic325x_driver);
+exit:
+	return ret;
+}
+
+static void __exit imx_asoc_exit(void)
+{
+	platform_driver_unregister(&imx_aic325x_driver);
+	platform_device_unregister(imx_snd_aic325x_device);
+}
+
+module_init(imx_asoc_init);
+module_exit(imx_asoc_exit);
+
+/* Module information */
+MODULE_DESCRIPTION("ALSA SoC imx aic325x");
+MODULE_LICENSE("GPL");

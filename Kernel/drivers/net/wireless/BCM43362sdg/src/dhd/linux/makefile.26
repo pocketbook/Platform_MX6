@@ -1,0 +1,40 @@
+#
+# Makefile fragment for Linux 2.6
+# Broadcom DHD Driver
+#
+# Copyright (C) 2011, Broadcom Corporation
+# All Rights Reserved.
+# 
+# THIS SOFTWARE IS OFFERED "AS IS", AND BROADCOM GRANTS NO WARRANTIES OF ANY
+# KIND, EXPRESS OR IMPLIED, BY STATUTE, COMMUNICATION OR OTHERWISE. BROADCOM
+# SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A SPECIFIC PURPOSE OR NONINFRINGEMENT CONCERNING THIS SOFTWARE.
+#
+# $Id: makefile.26,v 1.2.50.3 2011-02-07 23:29:49 $
+
+ifdef COMPAT_WIRELESS
+NOSTDINC_FLAGS := -I$(COMPAT_WIRELESS)/include/ \
+        -include $(COMPAT_WIRELESS)/include/linux/compat-2.6.h 
+endif
+
+ifneq ($(findstring -nexus-,-$(TARGET)-),)
+
+obj-m += bcm4329.o
+bcm4329-objs = $(DHDOFILES)
+
+else
+
+ifneq ($(findstring -panda-,-$(TARGET)-),)
+obj-m += bcmdhd.o
+bcmdhd-objs = $(DHDOFILES)
+else
+ifneq ($(findstring -prime-,-$(TARGET)-),)
+obj-m += bcmdhd.o
+bcmdhd-objs = $(DHDOFILES)
+endif
+obj-m += dhd.o
+dhd-objs = $(DHDOFILES)
+endif
+
+endif
+EXTRA_CFLAGS = $(DHDCFLAGS)
